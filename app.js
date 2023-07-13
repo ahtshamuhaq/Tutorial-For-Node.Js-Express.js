@@ -1,32 +1,35 @@
 const express = require("express");
-const app = express()
-const path = require("path")
-const port = 8000 
-app.use("/static",express.static("static"))
-app.set('view engine', 'pug')
-app.set('views',path.join(__dirname,'views'))
+const app = express();
+const fs = require('fs');
+const path = require("path");
+const port = 80;
+// EXPRESS SPECIFIC STUFF
+app.use("/static", express.static("static")); //for serving static files
+app.use(express.urlencoded());
+// Pug specidic stuff
+app.set("view engine", "pug"); //set the template engine as PUG
+app.set("views", path.join(__dirname, "views")); // set the views directory
 
-
-app.get("/demo",(req,res)=>{
-
-    res.status(200).render('demo', { title: 'Hey Developer', message: 'Hello there!,Thanks for providing me this code' })
-})
-app.get("/",(req,res)=>{
-
-    res.status(200).send("This is Home page of my first application with harry")
-})
-app.get("/about",(req,res)=>{
-
-    res.send("This is About page of  my first application with harry")
-})
-app.post("/about",(req,res)=>{
-
-    res.send("This is first post request from About page of  my first application with harry")
-})
-app.post("/this",(req,res)=>{
-
-    res.status(404).send("Page iss Not Found")
-})
-app.listen(port,()=>{
-    console.log(`This application is running successfully on ${port}`);
-})
+//ENDPOINTS
+app.get("/", (req, res) => {
+  const con =
+    "this is the best ever course you will find on internet so use it wisely ";
+  const params = { title: "PubG is the best game ever", content: con };
+  res.status(200).render("index.pug", params);
+});
+app.post("/", (req, res) => {
+  name = req.body.name;
+  age = req.body.age;
+  gender = req.body.gender;
+  address = req.body.address;
+  more = req.body.more;
+  
+  let outputToWrite = `The name of the client is ${name},${age} years old,${gender} residing at ${address},more about him : ${more}`
+  fs.writeFileSync("output.txt",outputToWrite)
+  const params = { message: "Your form has been submiteed successfully " };
+  res.status(200).render("index.pug", params);
+});
+//Start the server
+app.listen(port, () => {
+  console.log(`This application is running successfully on ${port}`);
+});
